@@ -4,7 +4,6 @@ All required fetch requests to any required APIs will be made in this file.
 import os
 from dotenv import load_dotenv
 import requests
-import streamlit as st
 from typing import Optional, Tuple
 from status_codes import SUCCESS, UNAUTHORIZED
 
@@ -12,6 +11,12 @@ load_dotenv()
 
 def parse_flight_offers(data: dict) -> list:
     """
+    Parse flight offers data from the Amadeus API.
+
+    param: data (dict): The flight offers data from the Amadeus API.
+
+    return: list: A list of parsed flight offers.
+
     """
     flight_offers = []
     for offer in data.get('data', []):
@@ -33,24 +38,23 @@ def parse_flight_offers(data: dict) -> list:
     return flight_offers
 
 class AmadeusAPI:
-    def __init__(self):
-        self.__client_id = None
-        self.__client_secret = None
+    def __init__(self,
+                 client_id: Optional[str] = None,
+                 client_secret: Optional[str] = None):
+        self.__client_id = client_id
+        self.__client_secret = client_secret
         self.__access_token = None
 
     def __str__(self):
-        return f"AmadeusAPI(client_id={self.client_id}, client_secret={self.client_secret})"
+        return f"AmadeusAPI with {'no' if self.__access_token is None else ''} \
+            existing access token"
 
     @property
     def client_id(self):
-        if self.__client_id is None:
-            self.__client_id = os.getenv("AMADEUS_CLIENT_ID")
         return self.__client_id
 
     @property
     def client_secret(self):
-        if self.__client_secret is None:
-            self.__client_secret = os.getenv("AMADEUS_CLIENT_SECRET")
         return self.__client_secret
 
     @property
@@ -126,6 +130,14 @@ class AmadeusAPI:
             return []
 
     def get_airport_coordinates(self, airport_code: str) -> Optional[Tuple[float, float]]:
+        """
+        Get the coordinates of an airport from the Amadeus API.
+
+        param: airport_code (str): The IATA code of the airport.
+
+        return: tuple: The latitude and longitude of the airport.
+
+        """
         print(f"Getting coordinates for {airport_code}")
         url = f"https://test.api.amadeus.com/v1/reference-data/locations?subType=AIRPORT&keyword={airport_code}&countryCode=US"
         headers = {'Authorization': f'Bearer {self.access_token}'}
@@ -159,6 +171,15 @@ class AmadeusAPI:
             return None
 
     def get_nearest_airport(self, latitude: float, longitude: float) -> Optional[str]:
+        """
+        Get the nearest airport to a given latitude and longitude from the Amadeus API.
+
+        param: latitude (float): The latitude of the location.
+        param: longitude (float): The longitude of the location.
+
+        return: str: The IATA code of the nearest airport.
+
+        """
         print(f"Getting closest airport to {latitude}, {longitude}")
         url = f"https://test.api.amadeus.com/v1/reference-data/locations/airports?latitude={latitude}&longitude={longitude}"
         headers = {'Authorization': f'Bearer {self.access_token}'}
@@ -182,16 +203,3 @@ class AmadeusAPI:
                     return data['data'][0]['iataCode']
                 else:
                     return None
-
-def get_auth_key():
-    try:
-        # Get the API key from Streamlit secrets when deployed
-        return st.secrets["AMADEUS_AUTH_KEY"]
-    except FileNotFoundError:
-        # Load the API key from .env file for local development
-        load_dotenv()
-        return os.getenv("AMADEUS_AUTH_KEY")
-
-if __name__ == "__main__":
-    auth = AmadeusAPI()
-    print(auth)

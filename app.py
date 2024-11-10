@@ -6,7 +6,8 @@ import folium
 from streamlit_folium import folium_static
 
 if 'amadeus' not in st.session_state:
-    st.session_state.amadeus = AmadeusAPI()
+  st.session_state.amadeus = AmadeusAPI(client_id=st.secrets.AMADEUS_CLIENT_ID,
+                                        client_secret=st.secrets.AMADEUS_CLIENT_SECRET)
 
 prices = {}
 flight_paths = {}
@@ -116,8 +117,7 @@ if st.button("Fetch Data"):
 
           price = prices[cheapest_destination][guest['name']]
           delta = price - average_cost
-          delta_color = "normal" if delta < 0 else "inverse"
-          st.metric(label="Price", value=price, delta=delta, delta_color=delta_color)
+          st.metric(label="Price", value=f"${price:.2f}", delta=f"{delta:.2f}", delta_color="normal")
         else:
           st.write("No flight path available")
           st.metric(label="Price", value="N/A")
