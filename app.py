@@ -19,11 +19,11 @@ st.title('Where To Meet? ✈️')
 # Date inputs for departure and return dates and number of guests
 col1, col2, col3 = st.columns(3)
 with col1:
-  departure_date = st.date_input("Departure Date", value=datetime.now() + timedelta(days=1))
+  departure_date = st.date_input("Departure Date", value=datetime.now() + timedelta(days=30))
   if departure_date == datetime.now().date():
     st.warning("Please select a future date")
 with col2:
-  return_date = st.date_input("Return Date", value=datetime.now() + timedelta(days=7))
+  return_date = st.date_input("Return Date", value=datetime.now() + timedelta(days=37))
 with col3:
   num_guests = st.number_input("Number of Guests", min_value=2, max_value=8, step=1)
 
@@ -102,6 +102,9 @@ if st.button("Fetch Data"):
 
   if len(prices) > 0:
     st.success("Calculations completed successfully")
+    print("prices:", prices)
+    print("flight_paths:", flight_paths)
+
     cheapest_destinations = find_cheapest_combination(prices)
 
     # Display the top results
