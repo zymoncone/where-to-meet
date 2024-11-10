@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 import requests
 from typing import Optional, Tuple
-from status_codes import SUCCESS, UNAUTHORIZED
+from constants import SUCCESS, UNAUTHORIZED
 
 load_dotenv()
 

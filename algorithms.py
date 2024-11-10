@@ -43,21 +43,22 @@ def geographic_midpoint(coordinates: list) -> Tuple[float, float]:
 
     return (lat_mid, lon_mid)
 
-def find_cheapest_combination(prices: dict) -> Tuple[str, float]:
+def find_cheapest_combination(prices: dict, max_destinations: int = 2) -> list:
   """
-  Find the cheapest combination of flights.
+  Find the two cheapest destinations.
 
   param: prices (dict): A dictionary of flight prices for each guest to each destination.
+  param: max_destinations (int): The number of cheapest destinations to return.
 
-  return: tuple: The cheapest destination and the minimum total cost.
+  return: list: The two cheapest destinations and their minimum total costs.
 
   """
   total_costs = {}
   for destination, guest_prices in prices.items():
-      total_costs[destination] = sum(guest_prices.values())
+    total_costs[destination] = sum(guest_prices.values())
 
-  # Find the destination with the minimum total cost
-  cheapest_destination = min(total_costs, key=total_costs.get)
-  min_total_cost = total_costs[cheapest_destination]
+  # Find the destinations with the minimum total costs
+  sorted_destinations = sorted(total_costs.items(), key=lambda item: item[1])
+  cheapest_destinations = sorted_destinations[:max_destinations]
 
-  return cheapest_destination, min_total_cost
+  return cheapest_destinations
