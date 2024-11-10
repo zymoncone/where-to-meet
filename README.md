@@ -1,19 +1,16 @@
-# Where to Meet ✈️📍
-
-|Module Version| |Build Status| |Maintainability| |Dependencies|
-
+# 📍 Where to Meet 📍
 
 ## Installation
 
-This app requires Python 3.8+
+This app requires `Python 3.8+`
 
-1. Create a virtual environment
+### Create a virtual environment
 
 ```sh
 python -m venv .venv
 ```
 
-2. Activate the virtual environment
+### Activate the virtual environment
 
 ```sh
 # Windows command prompt
@@ -26,9 +23,9 @@ python -m venv .venv
 source .venv/bin/activate
 ```
 
-Once activated, you will see your environment's name in parentheses at the beginning of your terminal prompt. "(.venv)"
+Once activated, you will see your environment's name in parentheses at the beginning of your terminal prompt `(.venv)`
 
-3. Install packages
+### Install packages
 
 You can install it all your packages directly from `requirements.txt`
 
@@ -36,7 +33,7 @@ You can install it all your packages directly from `requirements.txt`
 pip install -r requirements.txt
 ```
 
-4. Run your Streamlit app.
+### Run your Streamlit app.
 
 ```sh
 streamlit run app.py
