@@ -1,5 +1,9 @@
 # 📍 Where to Meet 📍
 
+After graduating, my friends and I scattered across the US, making reunions a logistical challenge. Someone always ends up with the short end of the stick. But what if there was a tool that could simplify this process? Introducing _Where2Meet_ – your ultimate solution for finding the perfect meeting spot for everyone.
+
+Discover the best destinations effortlessly at [Where2Meet](https://where2meet.streamlit.app/).
+
 ## Installation
 
 This app requires `Python 3.8+`
