@@ -1,6 +1,10 @@
-# 📍 Where to Meet 📍
+# 📍 Where to Meet
 
-After graduating, my friends and I scattered across the US, making reunions a logistical challenge. Someone always ends up with the short end of the stick. But what if there was a tool that could simplify this process? Introducing _Where2Meet_ – your ultimate solution for finding the perfect meeting spot for everyone.
+After graduation, my friends and I dispersed across the US, making reunions a logistical challenge. Every time, one of us ends up stuck with the tedious task of scouring _Google Flights_, _Airbnb_, and _Vrbo_ to figure out the best and most financially savvy travel plan for everyone. But what if there was a tool to simplify this process? Introducing _Where2Meet_ – the ultimate solution for finding the perfect meeting spot for your group.
+
+This tool takes the locations of you and your friends as input, along with your travel dates. It calculates a geographic midpoint, then creates a radius to identify the closest airports within that area. From there, it explores all possible flight combinations and retrieves prices for each route. The tool then optimizes the results to ensure that, on average, everyone gets the best possible deal.
+
+The potential for _Where2Meet_ is limitless. As we continue to develop, we'll add even more parameters for users to fine-tune, making the tool even smarter and more customizable.
 
 Discover the best destinations effortlessly at [Where2Meet](https://where2meet.streamlit.app/).
 
