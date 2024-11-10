@@ -1,11 +1,11 @@
 """
 All required fetch requests to any required APIs will be made in this file.
 """
-import os
 from dotenv import load_dotenv
 import requests
+import time
 from typing import Optional, Tuple
-from constants import SUCCESS, UNAUTHORIZED
+from constants import SUCCESS, UNAUTHORIZED, TOO_MANY_REQUESTS, RETRY_DELAY
 
 load_dotenv()
 
@@ -95,6 +95,11 @@ class AmadeusAPI:
         print(f"Getting flight offers departing {departureDate}")
         print(f"   ...and returning {returnDate}")
 
+        if originLocationCode == destinationLocationCode:
+            stub_oneway_path = [originLocationCode, destinationLocationCode]
+            return [{'price': 0.00, 'flight_paths':
+                {'to': stub_oneway_path, 'return': stub_oneway_path}}]
+
         url = "https://test.api.amadeus.com/v2/shopping/flight-offers"
         headers = {
             'Authorization': f'Bearer {self.access_token}'
@@ -150,10 +155,16 @@ class AmadeusAPI:
                 return (location['latitude'], location['longitude'])
             else:
                 return None
-        elif response.status_code == UNAUTHORIZED:
-            print("Refreshing access token...")
-            self.get_access_token()  # Refresh the access token
-            headers['Authorization'] = f'Bearer {self.access_token}'
+        elif response.status_code in {UNAUTHORIZED, TOO_MANY_REQUESTS}:
+            if response.status_code == UNAUTHORIZED:
+                print("Refreshing access token...")
+                self.get_access_token()  # Refresh the access token
+                headers['Authorization'] = f'Bearer {self.access_token}'
+
+            if response.status_code == TOO_MANY_REQUESTS:
+                print(f"Too many requests. Trying again after {RETRY_DELAY}...")
+                time.sleep(RETRY_DELAY)
+
             response = requests.get(url, headers=headers)
 
             if response.status_code == SUCCESS:

@@ -155,7 +155,10 @@ if st.button("Fetch Data"):
       st.error(f"Failed to fetch coordinates for {cheapest_destinations[0][0]}")
       st.stop()
 
-    m = folium.Map(location=cheapest_destination_airport_coords, zoom_start=3)
+    m = folium.Map(location=cheapest_destination_airport_coords,
+                   zoom_start=3,
+                   width='100%',
+                   height='100%')
 
     # Add markers for each guest's home airport
     for guest in guests:

@@ -1,6 +1,10 @@
 # status codes
 SUCCESS = 200
 UNAUTHORIZED = 401
+TOO_MANY_REQUESTS = 429
+
+# Time constants
+RETRY_DELAY = 1 # seconds
 
 # lists
 LAT_OFFSETS = [0, 5, -5]
