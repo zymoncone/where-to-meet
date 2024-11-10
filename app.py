@@ -17,25 +17,32 @@ possible_long_offsets = [0, 5, -5]
 
 st.title('Where To Meet? ✈️')
 
-# Date inputs for departure and return dates
-col1, col2 = st.columns(2)
+# Date inputs for departure and return dates and number of guests
+col1, col2, col3 = st.columns(3)
 with col1:
   departure_date = st.date_input("Departure Date", value=datetime.now() + timedelta(days=1))
   if departure_date == datetime.now().date():
     st.warning("Please select a future date")
 with col2:
   return_date = st.date_input("Return Date", value=datetime.now() + timedelta(days=7))
-
-# Number of guests
-num_guests = st.number_input("Number of Guests", min_value=2, step=1)
+with col3:
+  num_guests = st.number_input("Number of Guests", min_value=2, max_value=8, step=1)
 
 # Guest details input
 guests = []
+cols = st.columns(2)
 for i in range(num_guests):
-  st.subheader(f"Guest {i + 1}")
-  name = st.text_input(f"Name of Guest {i + 1}")
-  home_airport = st.text_input(f"Home Airport of Guest {i + 1}")
-  guests.append({"name": name, "home_airport": home_airport})
+  col = cols[i % 2]
+  with col:
+    st.html("<div style='border: 1px solid #ddd;'></div>")
+    st.subheader(f"Guest {i + 1}")
+    sub_col1, sub_col2 = st.columns(2)
+    name = sub_col1.text_input(f"Name", key=f"name_{i}")
+    home_airport = sub_col2.text_input(f"Home Airport", key=f"home_airport_{i}")
+    guests.append({"name": name, "home_airport": home_airport})
+
+  if i % 2 == 1 and i != num_guests - 1:
+    cols = st.columns(2)
 
 # Button to trigger the API call
 if st.button("Fetch Data"):
@@ -107,20 +114,25 @@ if st.button("Fetch Data"):
     average_cost = min_total_cost / num_guests
 
     # Create columns for each guest
-    cols = st.columns(num_guests)
-    for idx, guest in enumerate(guests):
-      with cols[idx]:
-        st.metric(label="Guest", value=guest['name'])
-        if guest['name'] in flight_paths[cheapest_destination]:
-          for i, path in enumerate(flight_paths[cheapest_destination][guest['name']].values()):
-            st.metric(label="to" if i == 0 else "return", value=" ➡️ ".join(path))
+    rows = (num_guests + 1) // 2
+    for row in range(rows):
+      cols = st.columns(2)
+      for col_idx in range(2):
+        guest_idx = row * 2 + col_idx
+        if guest_idx < num_guests:
+          guest = guests[guest_idx]
+          with cols[col_idx]:
+            st.metric(label="Guest", value=guest['name'])
+            if guest['name'] in flight_paths[cheapest_destination]:
+              for i, path in enumerate(flight_paths[cheapest_destination][guest['name']].values()):
+                st.metric(label="to" if i == 0 else "return", value=" ➡️ ".join(path))
 
-          price = prices[cheapest_destination][guest['name']]
-          delta = price - average_cost
-          st.metric(label="Price", value=f"${price:.2f}", delta=f"{delta:.2f}", delta_color="normal")
-        else:
-          st.write("No flight path available")
-          st.metric(label="Price", value="N/A")
+              price = prices[cheapest_destination][guest['name']]
+              delta = price - average_cost
+              st.metric(label="Price", value=f"${price:.2f}", delta=f"{delta:.2f}", delta_color="normal")
+            else:
+              st.write("No flight path available")
+              st.metric(label="Price", value="N/A")
 
     # Create a map centered around the midpoint
     st.header("Flight Map 🧭")
